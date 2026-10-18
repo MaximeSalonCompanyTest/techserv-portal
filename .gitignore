@@ -1,0 +1,12 @@
+# .NET build output
+bin/
+obj/
+.vs/
+*.user
+
+# Node and Vite
+node_modules/
+dist/
+
+# Local secrets
+.env
