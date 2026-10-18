@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using TechServ.Api.Models;
 
 namespace TechServ.Api.Dtos;
@@ -19,6 +20,64 @@ public class CreateServiceRequestDto
 
     [Required, EnumDataType(typeof(RequestPriority))]
     public RequestPriority? Priority { get; set; }
+}
+
+public class ServiceRequestListItemDto
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = "";
+    public RequestCategory Category { get; set; }
+    public RequestPriority Priority { get; set; }
+    public RequestStatus Status { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string CustomerName { get; set; } = "";
+}
+
+public class PagedRequestsDto
+{
+    public List<ServiceRequestListItemDto> Items { get; set; } = new();
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+    public int TotalCount { get; set; }
+
+    // Shared by the customer and agent lists: they only differ in how the query is filtered.
+    public static async Task<PagedRequestsDto> FromQueryAsync(IQueryable<ServiceRequest> query, int page, int pageSize)
+    {
+        if (page < 1)
+        {
+            page = 1;
+        }
+        if (pageSize < 1 || pageSize > 50)
+        {
+            pageSize = 10;
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var items = await query
+            .OrderByDescending(r => r.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(r => new ServiceRequestListItemDto
+            {
+                Id = r.Id,
+                Title = r.Title,
+                Category = r.Category,
+                Priority = r.Priority,
+                Status = r.Status,
+                CreatedAt = r.CreatedAt,
+                CustomerName = r.User!.Name
+            })
+            .ToListAsync();
+
+        return new PagedRequestsDto
+        {
+            Items = items,
+            Page = page,
+            PageSize = pageSize,
+            TotalCount = totalCount
+        };
+    }
 }
 
 public class StatusChangeDto

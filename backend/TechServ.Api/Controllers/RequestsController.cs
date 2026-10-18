@@ -20,6 +20,20 @@ public class RequestsController : ControllerBase
         _db = db;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetMine(RequestStatus? status, int page = 1, int pageSize = 10)
+    {
+        var userId = User.GetUserId();
+
+        var query = _db.ServiceRequests.Where(r => r.UserId == userId);
+        if (status != null)
+        {
+            query = query.Where(r => r.Status == status);
+        }
+
+        return Ok(await PagedRequestsDto.FromQueryAsync(query, page, pageSize));
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(CreateServiceRequestDto dto)
     {
@@ -69,5 +83,38 @@ public class RequestsController : ControllerBase
         }
 
         return Ok(ServiceRequestDetailDto.FromEntity(request));
+    }
+
+    [HttpPost("{id}/cancel")]
+    public async Task<IActionResult> Cancel(int id)
+    {
+        var userId = User.GetUserId();
+
+        var request = await _db.ServiceRequests
+            .FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+
+        if (request == null)
+        {
+            return NotFound();
+        }
+
+        if (!request.CanBeCancelled())
+        {
+            return BadRequest(new { message = "Only open requests can be cancelled." });
+        }
+
+        request.StatusChanges.Add(new StatusChange
+        {
+            FromStatus = request.Status,
+            ToStatus = RequestStatus.Cancelled,
+            ChangedByUserId = userId,
+            ChangedAt = DateTime.UtcNow
+        });
+        request.Status = RequestStatus.Cancelled;
+
+        // One SaveChanges: the new status and its history row are saved together or not at all.
+        await _db.SaveChangesAsync();
+
+        return await GetById(id);
     }
 }

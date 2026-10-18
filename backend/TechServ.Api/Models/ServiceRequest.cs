@@ -12,4 +12,10 @@ public class ServiceRequest
     public RequestStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public List<StatusChange> StatusChanges { get; set; } = new();
+
+    // Status rules live here, in one place, so every endpoint applies the same ones.
+    public bool CanBeCancelled()
+    {
+        return Status == RequestStatus.Open;
+    }
 }
