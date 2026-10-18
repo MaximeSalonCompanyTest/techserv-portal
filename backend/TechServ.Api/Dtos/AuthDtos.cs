@@ -16,3 +16,19 @@ public class RegisterRequest
     [Required, MinLength(6), MaxLength(100)]
     public string Password { get; set; } = "";
 }
+
+public class LoginRequest
+{
+    [Required, EmailAddress]
+    public string Email { get; set; } = "";
+
+    [Required]
+    public string Password { get; set; } = "";
+}
+
+public class LoginResponse
+{
+    public string Token { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string Role { get; set; } = "";
+}
