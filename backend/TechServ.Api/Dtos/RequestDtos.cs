@@ -22,6 +22,12 @@ public class CreateServiceRequestDto
     public RequestPriority? Priority { get; set; }
 }
 
+public class ChangeStatusDto
+{
+    [Required, EnumDataType(typeof(RequestStatus))]
+    public RequestStatus? Status { get; set; }
+}
+
 public class ServiceRequestListItemDto
 {
     public int Id { get; set; }
