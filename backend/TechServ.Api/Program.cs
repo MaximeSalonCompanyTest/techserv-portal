@@ -50,6 +50,14 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+// Build or update the database and add sample data on startup, so a fresh clone works with one command.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+    SeedData.Initialize(db);
+}
+
 // Configure the HTTP request pipeline.
 // Swagger stays on in every environment because the API docs are part of the delivery.
 app.UseSwagger();
