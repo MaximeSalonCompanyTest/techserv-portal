@@ -18,4 +18,21 @@ public class ServiceRequest
     {
         return Status == RequestStatus.Open;
     }
+
+    // Allowed flow: Open -> InProgress -> Completed, and Open -> Cancelled.
+    public bool CanMoveTo(RequestStatus newStatus)
+    {
+        if (Status == RequestStatus.Open)
+        {
+            return newStatus == RequestStatus.InProgress || newStatus == RequestStatus.Cancelled;
+        }
+
+        if (Status == RequestStatus.InProgress)
+        {
+            return newStatus == RequestStatus.Completed;
+        }
+
+        // Completed and Cancelled are final.
+        return false;
+    }
 }
