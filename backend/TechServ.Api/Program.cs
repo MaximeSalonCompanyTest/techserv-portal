@@ -28,6 +28,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// The frontend runs on another address (port 5173), so the browser needs the API's permission to call it.
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy =>
+        policy.WithOrigins(builder.Configuration.GetSection("Cors:Origins").Get<string[]>()!)
+            .AllowAnyHeader()
+            .AllowAnyMethod()));
+
 // Enums travel as text in JSON ("Open", "High") instead of numbers.
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -64,6 +71,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
