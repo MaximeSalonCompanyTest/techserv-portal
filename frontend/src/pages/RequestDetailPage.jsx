@@ -55,7 +55,11 @@ export default function RequestDetailPage() {
       <RequestDetails request={request} />
 
       {/* The API also checks this rule; hiding the button only helps honest users. */}
-      {request.status === 'Open' && <button onClick={handleCancel}>Cancelar solicitação</button>}
+      {request.status === 'Open' && (
+        <button className="danger" onClick={handleCancel}>
+          Cancelar solicitação
+        </button>
+      )}
       {error && <p className="error">{error}</p>}
     </div>
   );

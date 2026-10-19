@@ -75,8 +75,10 @@ export default function AgentRequestsPage() {
                   </td>
                   <td>{request.customerName}</td>
                   <td>{categoryLabels[request.category]}</td>
-                  <td>{priorityLabels[request.priority]}</td>
-                  <td>{statusLabels[request.status]}</td>
+                  <td className={`priority priority-${request.priority}`}>{priorityLabels[request.priority]}</td>
+                  <td>
+                    <span className={`badge badge-${request.status}`}>{statusLabels[request.status]}</span>
+                  </td>
                   <td>{formatDate(request.createdAt)}</td>
                 </tr>
               ))}

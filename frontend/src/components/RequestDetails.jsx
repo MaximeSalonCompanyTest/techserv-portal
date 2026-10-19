@@ -7,13 +7,15 @@ export default function RequestDetails({ request }) {
       <h1>{request.title}</h1>
       <dl className="details">
         <dt>Status</dt>
-        <dd>{statusLabels[request.status]}</dd>
+        <dd>
+          <span className={`badge badge-${request.status}`}>{statusLabels[request.status]}</span>
+        </dd>
         <dt>Cliente</dt>
         <dd>{request.customerName}</dd>
         <dt>Categoria</dt>
         <dd>{categoryLabels[request.category]}</dd>
         <dt>Prioridade</dt>
-        <dd>{priorityLabels[request.priority]}</dd>
+        <dd className={`priority priority-${request.priority}`}>{priorityLabels[request.priority]}</dd>
         <dt>Criada em</dt>
         <dd>{formatDate(request.createdAt)}</dd>
         <dt>Descrição</dt>

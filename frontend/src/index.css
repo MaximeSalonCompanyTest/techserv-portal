@@ -1,135 +1,601 @@
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f4f5f7;
-  color: #222;
+/* ==========================================================
+   1. Colors and sizes
+   Defined once here and reused everywhere with var(--name),
+   so changing the main blue means editing one line.
+   ========================================================== */
+:root {
+  --primary: #1f5fa8;
+  --primary-dark: #164a85;
+  --primary-light: #e8f0fa;
+  --text: #1f2933;
+  --text-muted: #616e7c;
+  --border: #dde2e9;
+  --background: #f3f5f9;
+  --surface: #ffffff;
+  --danger: #c0262d;
+  --danger-dark: #9b1c22;
+  --danger-light: #fdecee;
+  --success: #1b7a35;
+  --success-light: #e7f5ec;
+  --warning: #9a6200;
+  --warning-light: #fff4dc;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 2px 8px rgba(16, 24, 40, 0.06);
+  --shadow-strong: 0 4px 20px rgba(16, 24, 40, 0.12);
 }
 
+/* ==========================================================
+   2. Base: page background, font, headings and links
+   ========================================================== */
+* {
+  box-sizing: border-box; /* padding and borders count inside the width, so sizes are predictable */
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  /* A soft blue band at the top of every page, fading into the gray background. */
+  background: linear-gradient(180deg, #e3ecf7 0, var(--background) 320px);
+  background-color: var(--background);
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 1.65rem;
+  margin: 0 0 20px;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin: 28px 0 12px;
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+/* ==========================================================
+   3. Page layout
+   .page centers the content. .narrow (login, sign-up,
+   new request, profile) turns the page into a white card
+   with a blue line on top.
+   ========================================================== */
 .page {
-  max-width: 900px;
-  margin: 24px auto;
-  padding: 0 16px;
+  max-width: 1000px;
+  margin: 32px auto;
+  padding: 0 20px;
 }
 
 .page.narrow {
-  max-width: 400px;
+  max-width: 440px;
+  margin-top: 56px;
+  padding: 28px 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--primary);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-strong);
 }
 
+/* "Voltar para a lista" is the first link on the detail pages: small, muted, with an arrow. */
+.page > a:first-child {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.page > a:first-child::before {
+  content: "\2190  "; /* left arrow */
+}
+
+.page > a:first-child:hover {
+  color: var(--primary);
+}
+
+/* ==========================================================
+   4. Navigation bar (shown on every logged-in page)
+   Flexbox puts the items in a row. margin-left: auto on the
+   user's name pushes it and the logout button to the right.
+   position: sticky keeps the bar visible while scrolling.
+   ========================================================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px;
+  padding: 12px 28px;
+  color: white;
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+  box-shadow: var(--shadow);
+}
+
+.navbar strong {
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  opacity: 0.85;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+}
+
+/* On hover, the link becomes fully white with a line under it. */
+.navbar a:hover {
+  color: white;
+  opacity: 1;
+  border-bottom-color: white;
+}
+
+.navbar-user {
+  margin-left: auto;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* The logout button is an outline button so it stands out less than the main actions. */
+.navbar button {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+}
+
+.navbar button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: none;
+}
+
+/* ==========================================================
+   5. Forms: fields stacked in a column, label above each field
+   ========================================================== */
 form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 label {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   font-weight: 600;
+  font-size: 0.875rem;
 }
 
 input,
 select,
 textarea {
-  padding: 8px;
+  padding: 10px 12px;
   font: inherit;
-  border: 1px solid #bbb;
-  border-radius: 4px;
+  font-weight: normal;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: #b8c1cc;
+}
+
+/* A blue ring shows which field is being typed in (also helps keyboard users). */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+textarea {
+  resize: vertical; /* the user can make it taller, but not wider than the card */
+}
+
+/* Locked fields, like the email on the profile page, look grayed out. */
+input:disabled {
+  background: var(--background);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+/* ==========================================================
+   6. Buttons
+   transition makes color changes smooth instead of instant.
+   On hover the button rises by 1px, and it goes back down
+   when pressed (:active), which feels like a real button.
+   ========================================================== */
 button {
-  padding: 8px 16px;
+  padding: 10px 20px;
   font: inherit;
-  border: none;
-  border-radius: 4px;
-  background: #1f5fa8;
+  font-weight: 600;
   color: white;
+  background: var(--primary);
+  border: none;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
   cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* A visible outline when the button is reached with the Tab key. */
+button:focus-visible {
+  outline: 3px solid var(--primary-light);
+  outline-offset: 2px;
 }
 
 button:disabled {
-  background: #999;
-  cursor: default;
+  background: #a8b1bc;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.navbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 16px;
-  background: white;
-  border-bottom: 1px solid #ddd;
+/* Red button for destructive actions (Cancel a request). */
+button.danger {
+  margin-top: 4px;
+  background: var(--danger);
 }
 
-.navbar-user {
-  margin-left: auto;
-  color: #555;
+button.danger:hover {
+  background: var(--danger-dark);
 }
 
+/* ==========================================================
+   7. Toolbar above the lists: status filter on the left,
+   "Nova solicitação" link styled as a button on the right
+   ========================================================== */
 .toolbar {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
+.toolbar select {
+  min-width: 200px;
+}
+
+.toolbar a {
+  padding: 10px 20px;
+  font-weight: 600;
+  color: white;
+  background: var(--primary);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.toolbar a::before {
+  content: "+ ";
+}
+
+.toolbar a:hover {
+  color: white;
+  background: var(--primary-dark);
+}
+
+/* ==========================================================
+   8. Tables (request lists)
+   border-collapse: separate is needed for the rounded corners.
+   ========================================================== */
 table {
   width: 100%;
-  border-collapse: collapse;
-  background: white;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
 th,
 td {
-  padding: 8px;
+  padding: 13px 16px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--border);
 }
 
+th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: #f8f9fb;
+}
+
+tbody tr {
+  transition: background 0.1s;
+}
+
+/* Highlight the row under the mouse, so it's easy to follow a line. */
+tbody tr:hover {
+  background: var(--primary-light);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+td a {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+td a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================
+   9. Status badges: a colored pill per status
+   The class comes from the status name, e.g. badge-InProgress.
+   ========================================================== */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 999px; /* a very large radius makes a pill shape */
+  white-space: nowrap;
+}
+
+.badge-Open {
+  color: var(--primary-dark);
+  background: var(--primary-light);
+}
+
+.badge-InProgress {
+  color: var(--warning);
+  background: var(--warning-light);
+}
+
+.badge-Completed {
+  color: var(--success);
+  background: var(--success-light);
+}
+
+.badge-Cancelled {
+  color: var(--text-muted);
+  background: #eceff3;
+  text-decoration: line-through;
+}
+
+/* ==========================================================
+   10. Priority: a small colored dot before the text
+   ========================================================== */
+.priority::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.priority-Low::before {
+  background: #9aa5b1;
+}
+
+.priority-Medium::before {
+  background: #e5a000;
+}
+
+.priority-High::before {
+  background: var(--danger);
+}
+
+.priority-High {
+  font-weight: 600;
+}
+
+/* ==========================================================
+   11. Request detail: fields in a two-column grid on a card
+   ========================================================== */
 .details {
   display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 8px;
-  background: white;
-  padding: 16px;
-  border: 1px solid #ddd;
+  grid-template-columns: 150px 1fr;
+  gap: 12px 20px;
+  align-items: center;
+  margin: 0 0 8px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .details dt {
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
 }
 
 .details dd {
   margin: 0;
 }
 
+/* Keeps the line breaks the customer typed in the description. */
 .description {
   white-space: pre-wrap;
 }
 
+/* ==========================================================
+   12. Status history, drawn as a timeline:
+   a vertical line on the left and a dot before each change.
+   The last change (the current status) gets a bigger dot.
+   ========================================================== */
 .history {
-  padding-left: 20px;
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 4px 0 4px 22px;
+  border-left: 2px solid var(--border);
 }
 
+.history li {
+  position: relative;
+  padding: 6px 0;
+}
+
+/* The dot: an empty element positioned on the line. */
+.history li::before {
+  content: "";
+  position: absolute;
+  left: -30px;
+  top: 13px;
+  width: 10px;
+  height: 10px;
+  background: #9aa5b1;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+}
+
+.history li:last-child {
+  font-weight: 600;
+}
+
+.history li:last-child::before {
+  left: -32px;
+  top: 11px;
+  width: 14px;
+  height: 14px;
+  background: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Status change form on the agent detail page: dropdown and button side by side. */
 .inline-form {
   flex-direction: row;
   align-items: center;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
+.inline-form select {
+  min-width: 200px;
+}
+
+/* ==========================================================
+   13. Pagination under the lists
+   ========================================================== */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-top: 16px;
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Page buttons are outline buttons, so they look secondary next to the table. */
+.pagination button {
+  padding: 8px 16px;
+  color: var(--primary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.pagination button:hover {
+  background: var(--primary-light);
+}
+
+.pagination button:disabled {
+  color: #a8b1bc;
+  background: var(--surface);
+}
+
+/* ==========================================================
+   14. Messages: errors in red boxes, confirmations in green,
+   with a colored bar on the left
+   ========================================================== */
+.error,
+.success {
+  margin: 0;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  border-left: 4px solid;
+  border-radius: 6px;
 }
 
 .error {
-  color: #b00020;
+  color: var(--danger);
+  background: var(--danger-light);
 }
 
 .success {
-  color: #1b7a35;
+  color: var(--success);
+  background: var(--success-light);
+}
+
+/* ==========================================================
+   15. Small screens (phones)
+   The table scrolls sideways instead of overflowing the page,
+   and the detail grid becomes a single column.
+   ========================================================== */
+@media (max-width: 640px) {
+  .navbar {
+    gap: 12px;
+    padding: 10px 16px;
+  }
+
+  .page.narrow {
+    margin: 24px 16px;
+    padding: 24px 20px;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .details {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .details dd {
+    margin-bottom: 12px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
 }
