@@ -25,6 +25,11 @@ export function saveLogin(data) {
   localStorage.setItem('role', data.role);
 }
 
+// Keeps the name in the nav bar in sync after a profile update.
+export function saveName(name) {
+  localStorage.setItem('name', name);
+}
+
 export function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('name');
