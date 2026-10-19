@@ -1,27 +1,28 @@
 /* ==========================================================
    1. Colors and sizes
-   Defined once here and reused everywhere with var(--name),
-   so changing the main blue means editing one line.
+   A black and white palette: black for main actions, grays for
+   borders and secondary text, white cards on a light background.
+   Defined once here and reused everywhere with var(--name).
    ========================================================== */
 :root {
-  --primary: #1f5fa8;
-  --primary-dark: #164a85;
-  --primary-light: #e8f0fa;
-  --text: #1f2933;
-  --text-muted: #616e7c;
-  --border: #dde2e9;
-  --background: #f3f5f9;
+  --black: #0a0a0a;
+  --black-hover: #262626;
+  --text: #0a0a0a;
+  --text-muted: #737373;
+  --border: #e5e5e5;
+  --border-strong: #d4d4d4;
+  --background: #fafafa;
   --surface: #ffffff;
-  --danger: #c0262d;
-  --danger-dark: #9b1c22;
-  --danger-light: #fdecee;
-  --success: #1b7a35;
-  --success-light: #e7f5ec;
-  --warning: #9a6200;
-  --warning-light: #fff4dc;
-  --radius: 10px;
-  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 2px 8px rgba(16, 24, 40, 0.06);
-  --shadow-strong: 0 4px 20px rgba(16, 24, 40, 0.12);
+  --hover: #f5f5f5;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-light: #fef2f2;
+  --success: #15803d;
+  --success-light: #f0fdf4;
+  --radius: 12px;
+  --radius-small: 8px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ring: 0 0 0 3px rgba(10, 10, 10, 0.08);
 }
 
 /* ==========================================================
@@ -33,62 +34,73 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--text);
-  /* A soft blue band at the top of every page, fading into the gray background. */
-  background: linear-gradient(180deg, #e3ecf7 0, var(--background) 320px);
-  background-color: var(--background);
-  min-height: 100vh;
+  background: var(--background);
+  -webkit-font-smoothing: antialiased; /* slightly thinner, cleaner text on Mac */
 }
 
 h1 {
-  font-size: 1.65rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   margin: 0 0 20px;
-  letter-spacing: -0.01em;
 }
 
 h2 {
-  font-size: 1.1rem;
-  margin: 28px 0 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 32px 0 12px;
 }
 
 a {
-  color: var(--primary);
+  color: var(--text);
+  text-underline-offset: 3px; /* keeps the underline away from the letters */
 }
 
 a:hover {
-  color: var(--primary-dark);
+  color: var(--black-hover);
 }
 
 /* ==========================================================
    3. Page layout
    .page centers the content. .narrow (login, sign-up,
-   new request, profile) turns the page into a white card
-   with a blue line on top.
+   new request, profile) turns the page into a white card.
    ========================================================== */
 .page {
   max-width: 1000px;
-  margin: 32px auto;
-  padding: 0 20px;
+  margin: 40px auto;
+  padding: 0 24px;
 }
 
 .page.narrow {
   max-width: 440px;
-  margin-top: 56px;
-  padding: 28px 32px;
+  margin-top: 64px;
+  padding: 28px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 4px solid var(--primary);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-strong);
+  box-shadow: var(--shadow);
 }
 
-/* "Voltar para a lista" is the first link on the detail pages: small, muted, with an arrow. */
+.page.narrow h1 {
+  font-size: 1.25rem;
+}
+
+/* Paragraphs inside the card (like "Não tem conta?") are small and gray. */
+.page.narrow > p {
+  margin: 20px 0 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* "Voltar para a lista" is the first link on the detail pages: small, gray, with an arrow. */
 .page > a:first-child {
   display: inline-block;
-  margin-bottom: 12px;
-  font-size: 0.9rem;
+  margin-bottom: 16px;
+  font-size: 0.875rem;
   color: var(--text-muted);
   text-decoration: none;
 }
@@ -98,14 +110,15 @@ a:hover {
 }
 
 .page > a:first-child:hover {
-  color: var(--primary);
+  color: var(--text);
 }
 
 /* ==========================================================
    4. Navigation bar (shown on every logged-in page)
-   Flexbox puts the items in a row. margin-left: auto on the
-   user's name pushes it and the logout button to the right.
-   position: sticky keeps the bar visible while scrolling.
+   White bar with a thin bottom border. Flexbox puts the items
+   in a row, and margin-left: auto on the user's name pushes it
+   and the logout button to the right. position: sticky keeps
+   the bar visible while scrolling.
    ========================================================== */
 .navbar {
   position: sticky;
@@ -114,50 +127,33 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 22px;
-  padding: 12px 28px;
-  color: white;
-  background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-  box-shadow: var(--shadow);
+  gap: 24px;
+  padding: 12px 32px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px); /* blurs the page behind the bar when scrolling */
+  border-bottom: 1px solid var(--border);
 }
 
 .navbar strong {
-  font-size: 1.2rem;
-  letter-spacing: 0.02em;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .navbar a {
-  color: white;
+  font-size: 0.9rem;
+  color: var(--text-muted);
   text-decoration: none;
-  opacity: 0.85;
-  padding: 4px 0;
-  border-bottom: 2px solid transparent;
 }
 
-/* On hover, the link becomes fully white with a line under it. */
 .navbar a:hover {
-  color: white;
-  opacity: 1;
-  border-bottom-color: white;
+  color: var(--text);
 }
 
 .navbar-user {
   margin-left: auto;
-  font-size: 0.9rem;
-  opacity: 0.9;
-}
-
-/* The logout button is an outline button so it stands out less than the main actions. */
-.navbar button {
-  padding: 6px 14px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: none;
-}
-
-.navbar button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: none;
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
 /* ==========================================================
@@ -166,43 +162,42 @@ a:hover {
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 label {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-weight: 600;
+  gap: 8px;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 input,
 select,
 textarea {
-  padding: 10px 12px;
+  padding: 9px 12px;
   font: inherit;
-  font-weight: normal;
+  font-size: 0.9rem;
   color: var(--text);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-small);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-input:hover,
-select:hover,
-textarea:hover {
-  border-color: #b8c1cc;
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
 }
 
-/* A blue ring shows which field is being typed in (also helps keyboard users). */
+/* A soft gray ring shows which field is being typed in (also helps keyboard users). */
 input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
+  border-color: var(--border-strong);
+  box-shadow: var(--ring);
 }
 
 textarea {
@@ -211,72 +206,86 @@ textarea {
 
 /* Locked fields, like the email on the profile page, look grayed out. */
 input:disabled {
-  background: var(--background);
   color: var(--text-muted);
+  background: var(--hover);
   cursor: not-allowed;
 }
 
 /* ==========================================================
    6. Buttons
-   transition makes color changes smooth instead of instant.
-   On hover the button rises by 1px, and it goes back down
-   when pressed (:active), which feels like a real button.
+   Main buttons are black. Secondary buttons (logout, page
+   buttons) are white with a border, like "Reset" in a form.
    ========================================================== */
 button {
-  padding: 10px 20px;
+  padding: 9px 18px;
   font: inherit;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: white;
-  background: var(--primary);
-  border: none;
-  border-radius: 8px;
-  box-shadow: var(--shadow);
+  background: var(--black);
+  border: 1px solid var(--black);
+  border-radius: var(--radius-small);
   cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-}
-
-button:active {
-  transform: translateY(0);
+  background: var(--black-hover);
+  border-color: var(--black-hover);
 }
 
 /* A visible outline when the button is reached with the Tab key. */
 button:focus-visible {
-  outline: 3px solid var(--primary-light);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--ring);
 }
 
 button:disabled {
-  background: #a8b1bc;
-  box-shadow: none;
+  opacity: 0.4;
   cursor: not-allowed;
-  transform: none;
 }
 
-/* Red button for destructive actions (Cancel a request). */
+/* Secondary (white) buttons: logout and the page buttons. */
+.navbar button,
+.pagination button {
+  padding: 7px 14px;
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+.navbar button:hover,
+.pagination button:hover {
+  background: var(--hover);
+  border-color: var(--border);
+}
+
+.pagination button:disabled:hover {
+  background: var(--surface);
+}
+
+/* Red button for the one destructive action: cancelling a request. */
 button.danger {
-  margin-top: 4px;
   background: var(--danger);
+  border-color: var(--danger);
 }
 
 button.danger:hover {
-  background: var(--danger-dark);
+  background: var(--danger-hover);
+  border-color: var(--danger-hover);
 }
 
 /* ==========================================================
    7. Toolbar above the lists: status filter on the left,
-   "Nova solicitação" link styled as a button on the right
+   "Nova solicitação" link styled as a black button on the right
    ========================================================== */
 .toolbar {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .toolbar select {
@@ -284,12 +293,12 @@ button.danger:hover {
 }
 
 .toolbar a {
-  padding: 10px 20px;
-  font-weight: 600;
+  padding: 9px 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: white;
-  background: var(--primary);
-  border-radius: 8px;
-  box-shadow: var(--shadow);
+  background: var(--black);
+  border-radius: var(--radius-small);
   text-decoration: none;
   transition: background 0.15s;
 }
@@ -300,12 +309,13 @@ button.danger:hover {
 
 .toolbar a:hover {
   color: white;
-  background: var(--primary-dark);
+  background: var(--black-hover);
 }
 
 /* ==========================================================
    8. Tables (request lists)
-   border-collapse: separate is needed for the rounded corners.
+   The table sits on a white card. border-collapse: separate
+   is needed for the rounded corners.
    ========================================================== */
 table {
   width: 100%;
@@ -320,27 +330,21 @@ table {
 
 th,
 td {
-  padding: 13px 16px;
+  padding: 14px 16px;
   text-align: left;
+  font-size: 0.9rem;
   border-bottom: 1px solid var(--border);
 }
 
 th {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+  font-weight: 500;
   color: var(--text-muted);
-  background: #f8f9fb;
 }
 
-tbody tr {
-  transition: background 0.1s;
-}
-
-/* Highlight the row under the mouse, so it's easy to follow a line. */
+/* A light gray row under the mouse, so it's easy to follow a line. */
 tbody tr:hover {
-  background: var(--primary-light);
+  background: var(--background);
 }
 
 tbody tr:last-child td {
@@ -348,7 +352,7 @@ tbody tr:last-child td {
 }
 
 td a {
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
 }
 
@@ -357,62 +361,66 @@ td a:hover {
 }
 
 /* ==========================================================
-   9. Status badges: a colored pill per status
+   9. Status badges: a small pill per status, in grayscale
    The class comes from the status name, e.g. badge-InProgress.
+   Open is outlined, In progress is gray, Completed is solid
+   black, and Cancelled is crossed out.
    ========================================================== */
 .badge {
   display: inline-block;
-  padding: 3px 10px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid transparent;
   border-radius: 999px; /* a very large radius makes a pill shape */
   white-space: nowrap;
 }
 
 .badge-Open {
-  color: var(--primary-dark);
-  background: var(--primary-light);
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--border-strong);
 }
 
 .badge-InProgress {
-  color: var(--warning);
-  background: var(--warning-light);
+  color: var(--text);
+  background: #e5e5e5;
 }
 
 .badge-Completed {
-  color: var(--success);
-  background: var(--success-light);
+  color: white;
+  background: var(--black);
 }
 
 .badge-Cancelled {
   color: var(--text-muted);
-  background: #eceff3;
+  background: var(--hover);
   text-decoration: line-through;
 }
 
 /* ==========================================================
-   10. Priority: a small colored dot before the text
+   10. Priority: a small dot before the text, darker when higher
    ========================================================== */
 .priority::before {
   content: "";
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   margin-right: 8px;
   border-radius: 50%;
   vertical-align: middle;
 }
 
 .priority-Low::before {
-  background: #9aa5b1;
+  background: var(--border-strong);
 }
 
 .priority-Medium::before {
-  background: #e5a000;
+  background: var(--text-muted);
 }
 
 .priority-High::before {
-  background: var(--danger);
+  background: var(--black);
 }
 
 .priority-High {
@@ -425,9 +433,9 @@ td a:hover {
 .details {
   display: grid;
   grid-template-columns: 150px 1fr;
-  gap: 12px 20px;
+  gap: 14px 24px;
   align-items: center;
-  margin: 0 0 8px;
+  margin: 0;
   padding: 24px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -436,15 +444,13 @@ td a:hover {
 }
 
 .details dt {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.875rem;
   color: var(--text-muted);
 }
 
 .details dd {
   margin: 0;
+  font-size: 0.9rem;
 }
 
 /* Keeps the line breaks the customer typed in the description. */
@@ -455,50 +461,50 @@ td a:hover {
 /* ==========================================================
    12. Status history, drawn as a timeline:
    a vertical line on the left and a dot before each change.
-   The last change (the current status) gets a bigger dot.
+   The last change (the current status) gets a black dot.
    ========================================================== */
 .history {
   list-style: none;
-  margin: 0 0 28px;
+  margin: 0 0 32px;
   padding: 4px 0 4px 22px;
-  border-left: 2px solid var(--border);
+  border-left: 1px solid var(--border-strong);
 }
 
 .history li {
   position: relative;
   padding: 6px 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
 /* The dot: an empty element positioned on the line. */
 .history li::before {
   content: "";
   position: absolute;
-  left: -30px;
-  top: 13px;
-  width: 10px;
-  height: 10px;
-  background: #9aa5b1;
-  border: 2px solid var(--surface);
+  left: -28px;
+  top: 14px;
+  width: 9px;
+  height: 9px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
   border-radius: 50%;
 }
 
 .history li:last-child {
-  font-weight: 600;
+  color: var(--text);
+  font-weight: 500;
 }
 
 .history li:last-child::before {
-  left: -32px;
-  top: 11px;
-  width: 14px;
-  height: 14px;
-  background: var(--primary);
-  box-shadow: 0 0 0 3px var(--primary-light);
+  background: var(--black);
+  border-color: var(--black);
 }
 
-/* Status change form on the agent detail page: dropdown and button side by side. */
+/* Status change form on the agent detail page: dropdown and button side by side on a card. */
 .inline-form {
   flex-direction: row;
   align-items: center;
+  gap: 12px;
   padding: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -507,7 +513,7 @@ td a:hover {
 }
 
 .inline-form select {
-  min-width: 200px;
+  min-width: 220px;
 }
 
 /* ==========================================================
@@ -519,48 +525,32 @@ td a:hover {
   justify-content: center;
   gap: 16px;
   margin-top: 24px;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   color: var(--text-muted);
 }
 
-/* Page buttons are outline buttons, so they look secondary next to the table. */
-.pagination button {
-  padding: 8px 16px;
-  color: var(--primary);
-  background: var(--surface);
-  border: 1px solid var(--border);
-}
-
-.pagination button:hover {
-  background: var(--primary-light);
-}
-
-.pagination button:disabled {
-  color: #a8b1bc;
-  background: var(--surface);
-}
-
 /* ==========================================================
-   14. Messages: errors in red boxes, confirmations in green,
-   with a colored bar on the left
+   14. Messages: errors and confirmations in small tinted boxes
    ========================================================== */
 .error,
 .success {
   margin: 0;
   padding: 10px 14px;
-  font-size: 0.9rem;
-  border-left: 4px solid;
-  border-radius: 6px;
+  font-size: 0.875rem;
+  border: 1px solid;
+  border-radius: var(--radius-small);
 }
 
 .error {
   color: var(--danger);
   background: var(--danger-light);
+  border-color: #fecaca;
 }
 
 .success {
   color: var(--success);
   background: var(--success-light);
+  border-color: #bbf7d0;
 }
 
 /* ==========================================================
@@ -570,8 +560,13 @@ td a:hover {
    ========================================================== */
 @media (max-width: 640px) {
   .navbar {
-    gap: 12px;
+    gap: 14px;
     padding: 10px 16px;
+  }
+
+  .page {
+    margin: 24px auto;
+    padding: 0 16px;
   }
 
   .page.narrow {
