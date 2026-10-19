@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import AgentRequestDetailPage from './pages/AgentRequestDetailPage';
+import AgentRequestsPage from './pages/AgentRequestsPage';
 import LoginPage from './pages/LoginPage';
 import NewRequestPage from './pages/NewRequestPage';
 import ProfilePage from './pages/ProfilePage';
@@ -48,7 +50,15 @@ export default function App() {
         path="/agent"
         element={
           <ProtectedRoute role="Agent">
-            <p className="page">Todas as solicitações (próximo passo)</p>
+            <AgentRequestsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/agent/requests/:id"
+        element={
+          <ProtectedRoute role="Agent">
+            <AgentRequestDetailPage />
           </ProtectedRoute>
         }
       />

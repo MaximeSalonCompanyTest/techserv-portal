@@ -113,6 +113,11 @@ td {
   padding-left: 20px;
 }
 
+.inline-form {
+  flex-direction: row;
+  align-items: center;
+}
+
 .pagination {
   display: flex;
   align-items: center;
