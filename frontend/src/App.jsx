@@ -1,7 +1,9 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
+import NewRequestPage from './pages/NewRequestPage';
 import RegisterPage from './pages/RegisterPage';
+import RequestDetailPage from './pages/RequestDetailPage';
 import RequestsPage from './pages/RequestsPage';
 
 export default function App() {
@@ -21,7 +23,7 @@ export default function App() {
         path="/requests/new"
         element={
           <ProtectedRoute role="Customer">
-            <p className="page">Nova solicitação (próximo passo)</p>
+            <NewRequestPage />
           </ProtectedRoute>
         }
       />
@@ -29,7 +31,7 @@ export default function App() {
         path="/requests/:id"
         element={
           <ProtectedRoute role="Customer">
-            <p className="page">Detalhe (próximo passo)</p>
+            <RequestDetailPage />
           </ProtectedRoute>
         }
       />

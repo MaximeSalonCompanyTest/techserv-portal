@@ -88,6 +88,31 @@ td {
   border-bottom: 1px solid #ddd;
 }
 
+.details {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 8px;
+  background: white;
+  padding: 16px;
+  border: 1px solid #ddd;
+}
+
+.details dt {
+  font-weight: 600;
+}
+
+.details dd {
+  margin: 0;
+}
+
+.description {
+  white-space: pre-wrap;
+}
+
+.history {
+  padding-left: 20px;
+}
+
 .pagination {
   display: flex;
   align-items: center;
