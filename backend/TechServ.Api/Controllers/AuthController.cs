@@ -11,12 +11,16 @@ using TechServ.Api.Models;
 
 namespace TechServ.Api.Controllers;
 
+// No [Authorize] here: these endpoints are how a user gets a token in the first place.
+// [ApiController] checks the DTO's rules ([Required], [EmailAddress]...) and answers 400 before our code runs.
 [ApiController]
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly IConfiguration _config;
+
+    // Built into ASP.NET Core Identity: adds a random salt and hashes the password, so the real password is never stored.
     private readonly PasswordHasher<User> _hasher = new();
 
     public AuthController(AppDbContext db, IConfiguration config)
@@ -31,6 +35,8 @@ public class AuthController : ControllerBase
         // Same email typed as "Ana@Mail.com " or "ana@mail.com" must count as one account.
         var email = request.Email.Trim().ToLowerInvariant();
 
+        // Friendly 409 here. The unique index on Email in the database is the last guard
+        // if two sign-ups with the same email arrive at the same moment.
         if (await _db.Users.AnyAsync(u => u.Email == email))
         {
             return Conflict(new { message = "This email is already registered." });
@@ -41,7 +47,7 @@ public class AuthController : ControllerBase
             Name = request.Name.Trim(),
             Email = email,
             Phone = request.Phone.Trim(),
-            Role = UserRole.Customer,
+            Role = UserRole.Customer, // sign-up always creates a customer; agent accounts only come from the seed data
             CreatedAt = DateTime.UtcNow
         };
         user.PasswordHash = _hasher.HashPassword(user, request.Password);
@@ -75,6 +81,8 @@ public class AuthController : ControllerBase
 
     private string CreateToken(User user)
     {
+        // Claims are the facts the API trusts later without asking the database: who (ID), email and role.
+        // Anyone can read a JWT, so it holds nothing secret: no password, no phone.
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -82,6 +90,8 @@ public class AuthController : ControllerBase
             new Claim(ClaimTypes.Role, user.Role.ToString())
         };
 
+        // Signed with a secret key only the server has. If anyone edits the token (for example the role),
+        // the signature no longer matches and the API rejects it.
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -89,7 +99,7 @@ public class AuthController : ControllerBase
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(2),
+            expires: DateTime.UtcNow.AddHours(2), // logout deletes the token in the browser; a copied token still works until this expiry
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

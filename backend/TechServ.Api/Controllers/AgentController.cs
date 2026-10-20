@@ -8,6 +8,7 @@ using TechServ.Api.Models;
 
 namespace TechServ.Api.Controllers;
 
+// Agents only. A customer's token is valid but has the wrong role, so it gives 403.
 [ApiController]
 [Route("api/agent")]
 [Authorize(Roles = "Agent")]
@@ -36,6 +37,7 @@ public class AgentController : ControllerBase
     [HttpGet("requests/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
+        // Same as the customer detail, without the owner filter: an agent can open any request.
         var request = await _db.ServiceRequests
             .Include(r => r.User)
             .Include(r => r.StatusChanges).ThenInclude(s => s.ChangedByUser)
@@ -58,6 +60,7 @@ public class AgentController : ControllerBase
             return NotFound();
         }
 
+        // CanMoveTo enforces the flow Open -> InProgress -> Completed, or Open -> Cancelled. Anything else is a 400.
         var newStatus = dto.Status!.Value;
         if (!request.CanMoveTo(newStatus))
         {
@@ -68,7 +71,7 @@ public class AgentController : ControllerBase
         {
             FromStatus = request.Status,
             ToStatus = newStatus,
-            ChangedByUserId = User.GetUserId(),
+            ChangedByUserId = User.GetUserId(), // the agent's ID from the token, so the history shows who made the change
             ChangedAt = DateTime.UtcNow
         });
         request.Status = newStatus;

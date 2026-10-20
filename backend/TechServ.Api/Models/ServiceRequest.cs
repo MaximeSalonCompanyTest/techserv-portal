@@ -1,10 +1,11 @@
 namespace TechServ.Api.Models;
 
+// One class = one table, one property = one column. EF Core creates the table from this class through the migration.
 public class ServiceRequest
 {
-    public int Id { get; set; }
-    public int UserId { get; set; }
-    public User? User { get; set; }
+    public int Id { get; set; } // primary key
+    public int UserId { get; set; } // foreign key: the customer who opened the request
+    public User? User { get; set; } // navigation property: the customer object, filled when loaded with Include
     public string Title { get; set; } = "";
     public string Description { get; set; } = "";
     public RequestCategory Category { get; set; }

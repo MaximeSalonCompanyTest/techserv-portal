@@ -10,9 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// Dependency injection: each HTTP request gets its own AppDbContext, handed to the controllers through their constructor.
+// The connection string comes from appsettings.json locally, and from an environment variable in Docker and on Render.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
+// The rules every incoming token must pass: signed with our key, issued by our API, meant for our frontend, not expired.
+// A token that fails any of them gets a 401 before reaching a controller.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -72,6 +76,8 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+// Middleware runs in this order for every request: CORS (the browser's permission check), then authentication
+// (who are you, from the token), then authorization (are you allowed, from [Authorize]), then the controller.
 app.UseCors();
 
 app.UseAuthentication();

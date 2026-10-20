@@ -49,6 +49,7 @@ public class PagedRequestsDto
     // Shared by the customer and agent lists: they only differ in how the query is filtered.
     public static async Task<PagedRequestsDto> FromQueryAsync(IQueryable<ServiceRequest> query, int page, int pageSize)
     {
+        // Safety limits, so nobody can ask for page 0 or a million rows at once.
         if (page < 1)
         {
             page = 1;
@@ -58,8 +59,11 @@ public class PagedRequestsDto
             pageSize = 10;
         }
 
+        // The total lets the frontend know how many pages exist.
         var totalCount = await query.CountAsync();
 
+        // Newest first. Page 2 with size 10 skips 10 rows and takes 10 (SQL OFFSET 10 LIMIT 10).
+        // Select reads only the columns the list needs.
         var items = await query
             .OrderByDescending(r => r.CreatedAt)
             .Skip((page - 1) * pageSize)
