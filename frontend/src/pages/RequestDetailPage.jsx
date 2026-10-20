@@ -4,9 +4,10 @@ import { apiFetch } from '../api';
 import RequestDetails from '../components/RequestDetails';
 
 export default function RequestDetailPage() {
+  // Reads :id from the URL: at /requests/7, id is "7".
   const { id } = useParams();
   const [request, setRequest] = useState(null);
-  const [notFound, setNotFound] = useState(false);
+  const [notFound, setNotFound] = useState(false); // true after a 404: the request doesn't exist or belongs to someone else
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function RequestDetailPage() {
   }, [id]);
 
   async function handleCancel() {
+    // Asks "are you sure?" first, because cancelling can't be undone.
     if (!window.confirm('Deseja cancelar esta solicitação?')) {
       return;
     }

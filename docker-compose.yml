@@ -1,4 +1,6 @@
+# Starts the whole app with one command: docker compose up -d --build
 services:
+  # PostgreSQL from the official image. Reachable at localhost:5432 from the machine, and as "db" from the other containers.
   db:
     image: postgres:17
     environment:
@@ -8,28 +10,32 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data # the data lives in a volume, so it survives when the container is removed
+    # "Ready" only when Postgres answers; the API waits for this before starting.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
 
+  # The ASP.NET Core API, built from backend/TechServ.Api/Dockerfile. It applies the migrations and seed data when it starts.
   api:
     build: ./backend/TechServ.Api
     environment:
       # Inside Docker the database is reached by its service name, not localhost.
       ConnectionStrings__Default: "Host=db;Port=5432;Database=techserv;Username=postgres;Password=postgres"
     ports:
-      - "5208:8080"
+      - "5208:8080" # localhost:5208 on the machine goes to port 8080 inside the container
     depends_on:
       db:
         condition: service_healthy
 
+  # The React app, built into static files and served by nginx.
   frontend:
     build:
       context: ./frontend
       args:
+        # Written into the built files at build time: the browser calls the API at this address.
         VITE_API_URL: http://localhost:5208
     ports:
       - "5173:80"

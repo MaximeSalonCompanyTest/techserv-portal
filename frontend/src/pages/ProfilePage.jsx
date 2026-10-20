@@ -3,11 +3,12 @@ import { apiFetch, saveName } from '../api';
 import { formatDate } from '../labels';
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState(null);
-  const [form, setForm] = useState({ name: '', phone: '' });
+  const [profile, setProfile] = useState(null); // everything the API sent
+  const [form, setForm] = useState({ name: '', phone: '' }); // only the fields the user can edit
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
+  // The empty list [] means: run once, when the page opens.
   useEffect(() => {
     async function load() {
       const response = await apiFetch('/api/profile');
@@ -55,6 +56,7 @@ export default function ProfilePage() {
       <h1>Meu perfil</h1>
 
       <form onSubmit={handleSubmit}>
+        {/* disabled only locks the field on screen. The real protection is the API: its update DTO has no email. */}
         <label>
           E-mail (não pode ser alterado)
           <input value={profile.email} disabled />

@@ -7,13 +7,14 @@ import { categoryLabels, formatDate, priorityLabels, statusLabels } from '../lab
 const PAGE_SIZE = 10;
 
 export default function RequestsPage() {
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(''); // the filter; '' means all statuses
   const [page, setPage] = useState(1);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(null); // the API's answer: { items, page, pageSize, totalCount }; null while loading
 
   // Runs on first display and again whenever the filter or the page changes.
   useEffect(() => {
     async function load() {
+      // Builds the query string, for example ?page=1&pageSize=10&status=Open
       const params = new URLSearchParams({ page, pageSize: PAGE_SIZE });
       if (status) {
         params.append('status', status);
@@ -27,6 +28,7 @@ export default function RequestsPage() {
     load();
   }, [status, page]);
 
+  // A new filter starts again from page 1, otherwise we could ask for page 2 of a one-page result.
   function handleStatusChange(event) {
     setStatus(event.target.value);
     setPage(1);
@@ -51,6 +53,7 @@ export default function RequestsPage() {
         <Link to="/requests/new">Nova solicitação</Link>
       </div>
 
+      {/* Three cases: still loading, no results, or the table. */}
       {data === null && <p>Carregando...</p>}
 
       {data !== null && data.items.length === 0 && <p>Nenhuma solicitação encontrada.</p>}
@@ -68,6 +71,7 @@ export default function RequestsPage() {
               </tr>
             </thead>
             <tbody>
+              {/* One row per request. key helps React track rows; the class names drive the badge and priority dot colors in index.css. */}
               {data.items.map((request) => (
                 <tr key={request.id}>
                   <td>

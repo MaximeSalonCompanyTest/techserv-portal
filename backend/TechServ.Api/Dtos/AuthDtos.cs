@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TechServ.Api.Dtos;
 
+// DTOs: the exact shape of the JSON an endpoint accepts or returns.
+// The attributes are the validation rules; [ApiController] checks them and answers 400 if one is broken.
+
 public class RegisterRequest
 {
     [Required, MaxLength(100)]
@@ -26,6 +29,7 @@ public class LoginRequest
     public string Password { get; set; } = "";
 }
 
+// The role lets the frontend send customers to /requests and agents to /agent.
 public class LoginResponse
 {
     public string Token { get; set; } = "";

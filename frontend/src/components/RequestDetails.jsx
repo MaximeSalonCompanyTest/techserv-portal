@@ -22,6 +22,7 @@ export default function RequestDetails({ request }) {
         <dd className="description">{request.description}</dd>
       </dl>
 
+      {/* Oldest change first (the API sorts it). A null fromStatus is the creation line. */}
       <h2>Histórico</h2>
       <ul className="history">
         {request.history.map((change, index) => (

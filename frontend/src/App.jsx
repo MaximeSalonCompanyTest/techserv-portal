@@ -9,6 +9,8 @@ import RegisterPage from './pages/RegisterPage';
 import RequestDetailPage from './pages/RequestDetailPage';
 import RequestsPage from './pages/RequestsPage';
 
+// The route list: which page shows for which URL.
+// ProtectedRoute requires a token, and role="Customer" or role="Agent" keeps each type of user on its own pages.
 export default function App() {
   return (
     <Routes>
@@ -30,6 +32,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      {/* :id is a route parameter: the page reads it with useParams(). */}
       <Route
         path="/requests/:id"
         element={
@@ -62,6 +65,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      {/* Any unknown URL goes to /requests; ProtectedRoute then sends logged-out users to /login. */}
       <Route path="*" element={<Navigate to="/requests" />} />
     </Routes>
   );

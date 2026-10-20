@@ -21,6 +21,7 @@ export default function RegisterPage() {
       body: JSON.stringify(form),
     });
 
+    // 409 Conflict: the API found this email already registered.
     if (response.status === 409) {
       setError('Este e-mail já está cadastrado.');
       return;
@@ -30,6 +31,7 @@ export default function RegisterPage() {
       return;
     }
 
+    // The "registered" flag lets the login page show "Conta criada".
     navigate('/login', { state: { registered: true } });
   }
 
@@ -37,6 +39,7 @@ export default function RegisterPage() {
     <div className="page narrow">
       <h1>Criar conta</h1>
 
+      {/* required, type="email" and minLength give quick feedback in the browser. The API checks the same rules again. */}
       <form onSubmit={handleSubmit}>
         <label>
           Nome

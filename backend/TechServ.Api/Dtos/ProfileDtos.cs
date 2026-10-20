@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TechServ.Api.Dtos;
 
+// No PasswordHash property, so the hash can never be sent to the browser.
 public class ProfileResponse
 {
     public int Id { get; set; }

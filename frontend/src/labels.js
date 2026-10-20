@@ -18,6 +18,7 @@ export const priorityLabels = {
   High: 'Alta',
 };
 
+// The API sends dates in UTC; toLocaleString shows them in the user's time zone, in the Brazilian format.
 export function formatDate(value) {
   return new Date(value).toLocaleString('pt-BR');
 }

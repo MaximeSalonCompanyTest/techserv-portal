@@ -4,6 +4,7 @@ import { getName, getRole, logout } from '../api';
 export default function NavBar() {
   const navigate = useNavigate();
 
+  // Logout only happens in the browser: delete the token, then go to the login page.
   function handleLogout() {
     logout();
     navigate('/login');
@@ -12,6 +13,7 @@ export default function NavBar() {
   return (
     <nav className="navbar">
       <strong>TechServ</strong>
+      {/* Agents and customers see different links, based on the role saved at login. */}
       {getRole() === 'Agent' ? (
         <Link to="/agent">Todas as solicitações</Link>
       ) : (

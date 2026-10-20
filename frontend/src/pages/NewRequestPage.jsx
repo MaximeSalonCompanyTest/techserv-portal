@@ -8,6 +8,7 @@ export default function NewRequestPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // One handler for every field: the input's name says which property of the form to update.
   function handleChange(event) {
     setForm({ ...form, [event.target.name]: event.target.value });
   }
@@ -26,6 +27,7 @@ export default function NewRequestPage() {
       return;
     }
 
+    // The API answers 201 with the new request's id, so we open its detail page.
     const data = await response.json();
     navigate(`/requests/${data.id}`);
   }
@@ -43,6 +45,8 @@ export default function NewRequestPage() {
           Descrição
           <textarea name="description" value={form.description} onChange={handleChange} maxLength={2000} rows={5} required />
         </label>
+        {/* Dropdown options come from labels.js: the value is the English name the API expects, the text is Portuguese.
+            The empty "Selecione..." option plus required forces the user to choose. */}
         <label>
           Categoria
           <select name="category" value={form.category} onChange={handleChange} required>

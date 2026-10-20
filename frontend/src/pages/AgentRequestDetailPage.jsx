@@ -40,6 +40,7 @@ export default function AgentRequestDetailPage() {
       body: JSON.stringify({ status: newStatus }),
     });
 
+    // The API answers with the updated request: the page redraws with the new status, history line and next options.
     if (response.ok) {
       setRequest(await response.json());
       setNewStatus('');
@@ -61,6 +62,7 @@ export default function AgentRequestDetailPage() {
     return <p className="page">Carregando...</p>;
   }
 
+  // The statuses this request can move to. Empty for Completed and Cancelled, which are final.
   const options = nextStatuses[request.status];
 
   return (

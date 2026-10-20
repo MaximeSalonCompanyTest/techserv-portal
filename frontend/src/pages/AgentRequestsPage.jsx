@@ -19,6 +19,7 @@ export default function AgentRequestsPage() {
         params.append('status', status);
       }
 
+      // Agent endpoint: a customer's token would get a 403 here.
       const response = await apiFetch(`/api/agent/requests?${params}`);
       if (response.ok) {
         setData(await response.json());
